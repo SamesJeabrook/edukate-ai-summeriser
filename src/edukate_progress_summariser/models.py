@@ -101,3 +101,7 @@ class SummaryResult:
     alerts: Tuple[EscalationAlert, ...]
     alert_payload: AlertPayload
     metadata: GenerationMetadata
+
+    @property
+    def interpretation_label(self) -> str:
+        return "AI-generated interpretation"
