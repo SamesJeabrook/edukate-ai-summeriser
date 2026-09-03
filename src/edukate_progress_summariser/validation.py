@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, List, Optional, Sequence, Tuple
@@ -70,7 +71,7 @@ def _activity(value: Any, path: str, kind: str, errors: List[str]) -> Tuple[Acti
     return tuple(records)
 
 
-def validate_packet(data: Any) -> ProgressPacket:
+def validate_packet(data: Any, max_learners: Optional[int] = None, max_activity_records: Optional[int] = None) -> ProgressPacket:
     errors: List[str] = []
     if not isinstance(data, dict):
         raise ValidationError(("packet: must be a JSON object",))
@@ -84,6 +85,8 @@ def validate_packet(data: Any) -> ProgressPacket:
         learners_value = []
     if not learners_value:
         errors.append("packet.learners: must contain at least one learner")
+    if max_learners is not None and isinstance(learners_value, list) and len(learners_value) > max_learners:
+        errors.append(f"packet.learners: exceeds configured limit of {max_learners}")
     references = set()
     for index, raw in enumerate(learners_value):
         path = f"packet.learners[{index}]"
@@ -100,12 +103,14 @@ def validate_packet(data: Any) -> ProgressPacket:
             errors.append(f"{path}.name: must be a non-empty string")
         if not isinstance(product, str) or not product.strip():
             errors.append(f"{path}.product: must be a non-empty string")
-        if otj_hours is not None and (not isinstance(otj_hours, (int, float)) or isinstance(otj_hours, bool) or otj_hours < 0):
+        if otj_hours is not None and (not isinstance(otj_hours, (int, float)) or isinstance(otj_hours, bool) or not math.isfinite(otj_hours) or otj_hours < 0):
             errors.append(f"{path}.otj_hours: must be a non-negative number or null")
         if recency is not None and (not isinstance(recency, int) or isinstance(recency, bool) or recency < 0):
             errors.append(f"{path}.days_since_last_meeting: must be a non-negative integer or null")
         meetings = _activity(meetings_value, f"{path}.meetings", "meeting", errors)
         workshops = _activity(workshops_value, f"{path}.workshops", "workshop", errors)
+        if max_activity_records is not None and len(meetings) + len(workshops) > max_activity_records:
+            errors.append(f"{path}: exceeds configured activity limit of {max_activity_records}")
         learner_id = raw.get("learner_id")
         if learner_id is not None and (not isinstance(learner_id, str) or not learner_id.strip()):
             errors.append(f"{path}.learner_id: must be a non-empty string when provided")

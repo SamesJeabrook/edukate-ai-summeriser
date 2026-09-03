@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import Any
 
 from .ai_service import FakeAIProvider
+from .config import AppConfig
+from .errors import format_validation_error, format_processing_error
 from .summariser import SummaryService, render_text
 from .validation import ValidationError, load_json_file, validate_packet
 
@@ -49,13 +51,14 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
-        packet = validate_packet(load_json_file(args.input))
+        config = AppConfig.from_env()
+        packet = validate_packet(load_json_file(args.input), config.max_learners, config.max_activity_records)
         result = SummaryService(FakeAIProvider()).generate(packet)
     except ValidationError as exc:
-        print(str(exc), file=sys.stderr)
+        print(format_validation_error(exc), file=sys.stderr)
         return 2
     except Exception as exc:
-        print(f"processing error: {exc}", file=sys.stderr)
+        print(format_processing_error("unexpected processing error"), file=sys.stderr)
         return 1
 
     if args.format == "text":
