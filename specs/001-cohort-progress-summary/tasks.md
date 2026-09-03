@@ -89,10 +89,10 @@
 
 ### Tests for User Story 3
 
-- [ ] T028 [P] [US3] Add validation contract tests covering all `data/invalid-*.json` fixtures and expected field-specific errors in `tests/contract/test_invalid_packets.py`
-- [ ] T029 [P] [US3] Add privacy tests proving learner names, direct identifiers, credential-like values, and sensitive free text are absent from model requests and logs in `tests/unit/test_privacy_boundary.py`
-- [ ] T030 [P] [US3] Add prompt-injection tests proving untrusted packet text cannot alter instructions, output labels, or required disclaimers in `tests/unit/test_prompt_injection.py`
-- [ ] T031 [P] [US3] Add CLI failure tests proving non-zero exit, no partial output, and non-sensitive stderr for malformed, missing-field, invalid-type, date, duplicate, empty, and insufficient-evidence fixtures in `tests/contract/test_cli_errors.py`
+- [x] T028 [P] [US3] Add validation contract tests covering all `data/invalid-*.json` fixtures and expected field-specific errors in `tests/contract/test_invalid_packets.py`
+- [x] T029 [P] [US3] Add privacy tests proving learner names, direct identifiers, credential-like values, and sensitive free text are absent from model requests and logs in `tests/unit/test_privacy_boundary.py`
+- [x] T030 [P] [US3] Add prompt-injection tests proving untrusted packet text cannot alter instructions, output labels, or required disclaimers in `tests/unit/test_prompt_injection.py`
+- [x] T031 [P] [US3] Add CLI failure tests proving non-zero exit, no partial output, and non-sensitive stderr for malformed, missing-field, invalid-type, date, duplicate, empty, and insufficient-evidence fixtures in `tests/contract/test_cli_errors.py`
 
 ### Implementation for User Story 3
 
