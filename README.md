@@ -24,6 +24,9 @@ Use the fake provider for local development and tests. It requires no credential
 ```sh
 python -m edukate_progress_summariser data/valid-input.json --provider fake --format canonical
 python -m edukate_progress_summariser data/valid-input.json --provider fake --format text
+
+# Use the actual OpenAI provider. The CLI loads OPENAI_API_KEY from .env.
+python -m edukate_progress_summariser data/valid-input.json --provider openai --format text
 ```
 
 A successful result contains deterministic factual metrics, a clearly labelled AI-generated interpretation, structured escalation alerts, a canonical channel-neutral `alert_payload`, and non-sensitive generation metadata.
@@ -52,7 +55,7 @@ export EDUKATE_MAX_LEARNERS=500
 export EDUKATE_MAX_ACTIVITY_RECORDS=5000
 ```
 
-The official OpenAI SDK adapter is isolated behind the `AIProvider` boundary. Tests inject `FakeAIProvider`, so normal validation does not require `OPENAI_API_KEY`. Credentials must be supplied through the trusted runtime environment and must never be committed or printed.
+The official OpenAI SDK adapter is isolated behind the `AIProvider` boundary. Tests inject `FakeAIProvider`, so normal validation does not require `OPENAI_API_KEY`. For a real request, put the key in the local `.env` file or export it in the shell, then pass `--provider openai`. Credentials must be supplied through the trusted runtime environment and must never be committed or printed.
 
 ## Design references
 

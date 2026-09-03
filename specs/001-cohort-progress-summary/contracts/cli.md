@@ -15,7 +15,7 @@ The CLI reads one JSON packet. It writes the canonical structured result to stan
 
 ## Input
 
-The input must satisfy the Progress Packet model in [data-model.md](../data-model.md). Learner names and free text remain local and are excluded from the AI evidence request.
+The input must satisfy the Progress Packet model in [data-model.md](../data-model.md), including `sessions_attended`, `assessments_submitted`, and optional structured `at_risk_flags`. Learner names, direct identifiers, flag descriptions, and other free text remain local and are excluded from the AI evidence request.
 
 ## Output behavior
 
@@ -27,4 +27,4 @@ A successful result contains:
 - `alert_payload` with canonical channel-neutral content
 - `metadata` without learner-identifying content or credentials
 
-The canonical payload is intended for future formatter adapters. Slack/email formatting and delivery are not performed by this CLI contract.
+The canonical payload is intended for future formatter adapters. Slack/email formatting and delivery are not performed by this CLI contract. Use `--provider fake` for offline tests or `--provider openai` for an actual AI request using `OPENAI_API_KEY`.

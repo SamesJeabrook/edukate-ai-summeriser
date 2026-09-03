@@ -7,8 +7,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .ai_service import FakeAIProvider
-from .config import AppConfig
+from .ai_service import FakeAIProvider, OpenAIProvider
+from .config import AppConfig, openai_api_key
 from .errors import format_validation_error, format_processing_error
 from .summariser import SummaryService, render_text
 from .validation import ValidationError, load_json_file, validate_packet
@@ -43,7 +43,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Generate an evidence-based cohort progress summary.")
     parser.add_argument("input", type=Path)
     parser.add_argument("--output", type=Path)
-    parser.add_argument("--provider", choices=("fake",), default="fake")
+    parser.add_argument("--provider", choices=("fake", "openai"), default="fake")
     parser.add_argument("--format", choices=("canonical", "text"), default="canonical")
     return parser
 
@@ -53,7 +53,14 @@ def main(argv: list[str] | None = None) -> int:
     try:
         config = AppConfig.from_env()
         packet = validate_packet(load_json_file(args.input), config.max_learners, config.max_activity_records)
-        result = SummaryService(FakeAIProvider()).generate(packet)
+        if args.provider == "openai":
+            api_key = openai_api_key()
+            if not api_key:
+                raise ValueError("OPENAI_API_KEY is not configured")
+            provider = OpenAIProvider(model=config.model, api_key=api_key)
+        else:
+            provider = FakeAIProvider()
+        result = SummaryService(provider, config=config).generate(packet)
     except ValidationError as exc:
         print(format_validation_error(exc), file=sys.stderr)
         return 2
