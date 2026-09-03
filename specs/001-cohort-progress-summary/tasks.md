@@ -65,9 +65,9 @@
 
 ### Tests for User Story 2
 
-- [ ] T020 [P] [US2] Add intervention-rule evaluation tests for default thresholds, employer/cohort overrides, matching conditions, severity, and insufficient evidence in `tests/unit/test_alert_rules.py`
-- [ ] T021 [P] [US2] Add alert payload contract tests against `specs/001-cohort-progress-summary/contracts/output-schema.json` in `tests/contract/test_alert_payload.py`
-- [ ] T022 [P] [US2] Add multi-alert integration tests proving learner identity is account-manager-facing while AI evidence uses derived references in `tests/integration/test_alert_workflow.py`
+- [X] T020 [P] [US2] Add intervention-rule evaluation tests for default thresholds, employer/cohort overrides, matching conditions, severity, and insufficient evidence in `tests/unit/test_alert_rules.py`
+- [X] T021 [P] [US2] Add alert payload contract tests against `specs/001-cohort-progress-summary/contracts/output-schema.json` in `tests/contract/test_alert_payload.py`
+- [X] T022 [P] [US2] Add multi-alert integration tests proving learner identity is account-manager-facing while AI evidence uses derived references in `tests/integration/test_alert_workflow.py`
 
 ### Implementation for User Story 2
 
