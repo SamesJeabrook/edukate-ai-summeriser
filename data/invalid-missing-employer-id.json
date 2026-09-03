@@ -1,0 +1,12 @@
+{
+  "learners": [
+    {
+      "name": "Test Learner",
+      "product": "L3 Example Programme",
+      "otj_hours": 40,
+      "meetings": [],
+      "workshops": [],
+      "days_since_last_meeting": null
+    }
+  ]
+}

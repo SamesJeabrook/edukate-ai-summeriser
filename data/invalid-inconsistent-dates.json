@@ -1,0 +1,22 @@
+{
+  "employer_id": 123,
+  "learners": [
+    {
+      "name": "Test Learner",
+      "product": "L3 Example Programme",
+      "otj_hours": 40,
+      "meetings": [
+        {
+          "date_timestamp": "not-a-date",
+          "meeting_name": "Coach Meeting"
+        },
+        {
+          "date_timestamp": "2099-12-31T12:00:00Z",
+          "meeting_name": "Coach Meeting"
+        }
+      ],
+      "workshops": [],
+      "days_since_last_meeting": -4
+    }
+  ]
+}
