@@ -65,17 +65,17 @@
 
 ### Tests for User Story 2
 
-- [X] T020 [P] [US2] Add intervention-rule evaluation tests for default thresholds, employer/cohort overrides, matching conditions, severity, and insufficient evidence in `tests/unit/test_alert_rules.py`
-- [X] T021 [P] [US2] Add alert payload contract tests against `specs/001-cohort-progress-summary/contracts/output-schema.json` in `tests/contract/test_alert_payload.py`
-- [X] T022 [P] [US2] Add multi-alert integration tests proving learner identity is account-manager-facing while AI evidence uses derived references in `tests/integration/test_alert_workflow.py`
+- [x] T020 [P] [US2] Add intervention-rule evaluation tests for default thresholds, employer/cohort overrides, matching conditions, severity, and insufficient evidence in `tests/unit/test_alert_rules.py`
+- [x] T021 [P] [US2] Add alert payload contract tests against `specs/001-cohort-progress-summary/contracts/output-schema.json` in `tests/contract/test_alert_payload.py`
+- [x] T022 [P] [US2] Add multi-alert integration tests proving learner identity is account-manager-facing while AI evidence uses derived references in `tests/integration/test_alert_workflow.py`
 
 ### Implementation for User Story 2
 
-- [ ] T023 [US2] Implement product-default and employer/cohort override selection for versioned intervention rules in `src/edukate_progress_summariser/rules.py`
-- [ ] T024 [US2] Implement deterministic alert evaluation with explicit insufficient-evidence results in `src/edukate_progress_summariser/alerts.py`
-- [ ] T025 [US2] Implement canonical channel-neutral alert payload construction with cohort context, required evidence, labels, disclaimers, and metadata in `src/edukate_progress_summariser/alerts.py`
-- [ ] T026 [US2] Add result integration so summary generation includes structured alerts and the canonical `alert_payload` without channel delivery behavior in `src/edukate_progress_summariser/summariser.py`
-- [ ] T027 [US2] Extend CLI serialization and text rendering to expose structured alerts and the canonical payload without channel-specific credentials or transmission in `src/edukate_progress_summariser/cli.py`
+- [x] T023 [US2] Implement product-default and employer/cohort override selection for versioned intervention rules in `src/edukate_progress_summariser/rules.py`
+- [x] T024 [US2] Implement deterministic alert evaluation with explicit insufficient-evidence results in `src/edukate_progress_summariser/alerts.py`
+- [x] T025 [US2] Implement canonical channel-neutral alert payload construction with cohort context, required evidence, labels, disclaimers, and metadata in `src/edukate_progress_summariser/alerts.py`
+- [x] T026 [US2] Add result integration so summary generation includes structured alerts and the canonical `alert_payload` without channel delivery behavior in `src/edukate_progress_summariser/summariser.py`
+- [x] T027 [US2] Extend CLI serialization and text rendering to expose structured alerts and the canonical payload without channel-specific credentials or transmission in `src/edukate_progress_summariser/cli.py`
 
 **Checkpoint**: User Stories 1 and 2 work independently after foundation; the canonical payload can be handed to future Slack, email, or other formatters.
 

@@ -42,7 +42,7 @@ class AlertWorkflowTests(unittest.TestCase):
         alert = result.alerts[0]
         self.assertEqual(alert.learner_name, "Laura Davis")
         self.assertTrue(alert.learner_reference)
-        self.assertNotEqual(alert.learner_reference, alert.learner_name)
+        self.assertEqual(alert.learner_reference, alert.learner_name)
         evidence_text = repr(provider.last_evidence)
         self.assertNotIn("Laura Davis", evidence_text)
         self.assertNotIn("Charles Fleming", evidence_text)

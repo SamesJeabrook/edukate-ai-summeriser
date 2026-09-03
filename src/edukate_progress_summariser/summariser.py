@@ -3,23 +3,27 @@ from __future__ import annotations
 import hashlib
 import json
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Iterable, Optional
 
 from .ai_service import AIProvider
+from .alerts import build_alert_payload, evaluate_alerts
 from .metrics import calculate_facts
-from .models import AlertPayload, GenerationMetadata, ProgressPacket, ResultStatus, SummaryResult
+from .models import GenerationMetadata, InterventionRule, ProgressPacket, ResultStatus, SummaryResult
 from .prompting import build_interpretation_prompt
+from .rules import default_rules
 
 
 DISCLAIMER = "Escalations support human review and do not represent an automatic employment or learner outcome decision."
 
 
 class SummaryService:
-    def __init__(self, provider: AIProvider):
+    def __init__(self, provider: AIProvider, rules: Optional[Iterable[InterventionRule]] = None):
         self.provider = provider
+        self.rules = tuple(rules) if rules is not None else default_rules()
 
     def generate(self, packet: ProgressPacket) -> SummaryResult:
         facts = calculate_facts(packet)
+        alerts = evaluate_alerts(packet, self.rules)
         evidence = build_interpretation_prompt(packet)
         packet_reference = hashlib.sha256(json.dumps(evidence, sort_keys=True).encode("utf-8")).hexdigest()[:16]
         generated_at = datetime.now(timezone.utc).isoformat()
@@ -41,14 +45,20 @@ class SummaryService:
             output_status = "interpretation_unavailable"
 
         metadata = GenerationMetadata(**metadata_base, output_status=output_status)
-        payload = AlertPayload(
-            cohort_context={"employer_id": packet.employer_id},
-            alerts=(),
-            human_review_disclaimer=DISCLAIMER,
-            facts=facts,
+        payload = build_alert_payload(
+            packet.employer_id,
+            facts,
+            alerts,
+            DISCLAIMER,
+        )
+        payload = payload.__class__(
+            cohort_context=payload.cohort_context,
+            alerts=payload.alerts,
+            human_review_disclaimer=payload.human_review_disclaimer,
+            facts=payload.facts,
             interpretation=interpretation,
         )
-        return SummaryResult(status, facts, interpretation, evidence_status, (), payload, metadata)
+        return SummaryResult(status, facts, interpretation, evidence_status, alerts, payload, metadata)
 
 
 def render_text(result: SummaryResult) -> str:
@@ -60,6 +70,7 @@ def render_text(result: SummaryResult) -> str:
         f"Recorded hours: {result.facts.total_otj_hours:g}",
         f"Meetings: {result.facts.meeting_count}",
         f"Workshops: {result.facts.workshop_count}",
+        f"Escalation alerts: {len(result.alerts)}",
         f"Evidence status: {result.evidence_status}",
         "",
         "AI-generated interpretation",
@@ -67,4 +78,8 @@ def render_text(result: SummaryResult) -> str:
     ]
     if result.facts.evidence_limitations:
         lines.extend(["", "Evidence limitations", *result.facts.evidence_limitations])
+    if result.alerts:
+        lines.extend(["", "Escalation alerts"])
+        for alert in result.alerts:
+            lines.append(f"- {alert.severity.upper()}: {alert.learner_reference} - {alert.explanation}")
     return "\n".join(lines)
