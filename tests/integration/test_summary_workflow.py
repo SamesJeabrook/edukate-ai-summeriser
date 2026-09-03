@@ -48,6 +48,28 @@ class SummaryWorkflowTests(unittest.TestCase):
         self.assertEqual(result.facts.learner_count, 100)
         self.assertIn("unavailable", result.evidence_status.lower())
 
+    def test_corrected_fields_and_flags_are_available_to_summary_without_flag_descriptions(self):
+        packet = validate_packet({
+            "employer_id": 123,
+            "learners": [{
+                "name": "Flagged Learner",
+                "product": "Example",
+                "sessions_attended": 4,
+                "assessments_submitted": 2,
+                "otj_hours": 10,
+                "meetings": [],
+                "workshops": [],
+                "days_since_last_meeting": 1,
+                "at_risk_flags": [{"code": "low_attendance", "severity": "high", "description": "Do not send this."}],
+            }],
+        })
+        provider = FakeAIProvider()
+        result = SummaryService(provider).generate(packet)
+        self.assertEqual(result.facts.sessions_attended, 4)
+        self.assertEqual(result.facts.assessments_submitted, 2)
+        self.assertEqual(result.facts.at_risk_flags[0].severity, "high")
+        self.assertNotIn("Do not send this", repr(provider.last_evidence))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -18,7 +18,7 @@ Unknown top-level fields are ignored unless explicitly supported. The original p
 | `name`                    | string                        | Yes for current packet format | Account-manager-facing reference; never sent to AI                                   |
 | `learner_id`              | string                        |                      Optional | Source reference when supplied; not required by the clarified name-based input model |
 | `product`                 | string                        |                           Yes | Non-empty programme name                                                             |
-| `sessions_attended`       | non-negative integer or null  |                            No | Missing means unavailable; zero is a valid measured value                            |
+| `sessions_attended`       | non-negative integer or null  |                            No | If absent, meeting and workshop records provide the available session count; zero is valid |
 | `assessments_submitted`   | non-negative integer or null  |                            No | Missing means unavailable; zero is a valid measured value                            |
 | `otj_hours`               | non-negative number or null   |                           Yes | Null means missing; zero is a valid measured value                                   |
 | `meetings`                | array of activity records     |                           Yes | Empty array means no recorded meetings; wrong type is invalid                        |

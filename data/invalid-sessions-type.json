@@ -1,0 +1,13 @@
+{
+  "employer_id": 123,
+  "learners": [{
+    "name": "Test Learner",
+    "product": "Example",
+    "sessions_attended": "eight",
+    "assessments_submitted": 1,
+    "otj_hours": 10,
+    "meetings": [],
+    "workshops": [],
+    "days_since_last_meeting": 1
+  }]
+}

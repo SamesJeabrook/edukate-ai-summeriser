@@ -43,7 +43,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Generate an evidence-based cohort progress summary.")
     parser.add_argument("input", type=Path)
     parser.add_argument("--output", type=Path)
-    parser.add_argument("--provider", choices=("fake", "openai"), default="fake")
+    parser.add_argument("--provider", choices=("fake", "openai"), default="openai")
     parser.add_argument("--format", choices=("canonical", "text"), default="canonical")
     return parser
 
