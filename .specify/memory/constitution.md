@@ -1,13 +1,12 @@
 <!--
 Sync Impact Report
-- Version change: not established -> 1.0.0
+- Version change: 1.0.0 -> 1.1.0
 - Modified principles: scaffold placeholders -> Python Simplicity and Clarity;
 	scaffold placeholders -> Evidence-Led Human Decision Support; scaffold
 	placeholders -> Privacy and Data Minimisation; scaffold placeholders -> Secure
 	and Trustworthy AI Integration; scaffold placeholders -> Traceability and
 	Quality Gates
-- Added sections: Technical and Compliance Constraints; Development Workflow and
-	Quality Gates
+- Added sections: Definition of Done under Development Workflow and Quality Gates
 - Removed sections: none
 - Follow-up TODOs: TODO(RATIFICATION_DATE): confirm the project's original
 	constitution adoption date.
@@ -85,6 +84,20 @@ outputs do not disclose sensitive learner data and that AI output remains clearl
 identified. A clean-checkout local run MUST be verified for changes to setup,
 configuration, or runtime dependencies.
 
+### Definition of Done
+
+A feature is complete only when all of the following conditions are met:
+
+- The AI behaviour is covered by appropriate automated tests.
+- AI failures are handled gracefully without exposing credentials or sensitive learner
+  data.
+- Output is validated before presentation to a user.
+- Privacy and security implications have been considered and addressed.
+- No credentials, API keys, or other secrets are exposed to clients, logs, or committed
+  files.
+- The implementation is documented sufficiently for another engineer to understand its
+  design, configuration, data flow, and operational constraints.
+
 ## Governance
 
 <!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
@@ -101,4 +114,4 @@ required for clarifications, wording, or other non-semantic refinements. Each re
 MUST verify compliance with the current version, UK GDPR obligations, data minimisation,
 credential handling, and AI-output safeguards.
 
-**Version**: 1.0.0 | **Ratified**: TODO(RATIFICATION_DATE): confirm original adoption date | **Last Amended**: 2026-09-02
+**Version**: 1.1.0 | **Ratified**: TODO(RATIFICATION_DATE): confirm original adoption date | **Last Amended**: 2026-09-03
