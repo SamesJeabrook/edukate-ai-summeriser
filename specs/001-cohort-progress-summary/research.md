@@ -36,6 +36,18 @@
 - **Rationale**: Provides predictable defaults and supports different programme expectations without changing the input packet.
 - **Alternatives considered**: Fixed thresholds only were rejected because cohorts may have different expectations. Account-manager editing during review was rejected because it makes results harder to reproduce.
 
+## Decision: Optional session and assessment counts preserve missing evidence
+
+- **Decision**: Accept missing `sessions_attended` and `assessments_submitted` values, distinguish them from zero, and report their absence as an evidence limitation.
+- **Rationale**: Source systems may not provide every progress measure. Treating missing values as zero would create false negative progress and misleading escalation decisions.
+- **Alternatives considered**: Requiring both fields was rejected because it would exclude incomplete but otherwise useful packets. Defaulting missing values to zero was rejected because it changes the meaning of the source evidence.
+
+## Decision: Source at-risk flags are rule inputs, not automatic alerts
+
+- **Decision**: Preserve each source flag code and severity as factual evidence; create an escalation alert only when the flag matches a configured intervention rule.
+- **Rationale**: This keeps the employer summary faithful to the source while allowing configurable alert sensitivity and avoiding unnecessary alert noise.
+- **Alternatives considered**: Automatically alerting on every flag was rejected because source flags may be informational or already resolved. Alerting only high-severity flags was rejected because severity policy belongs in configurable intervention rules.
+
 ## Decision: Use standard-library-first local execution
 
 - **Decision**: Use Python 3.12+, standard-library JSON/date handling, and `unittest`; add only the official OpenAI SDK for the real provider integration.

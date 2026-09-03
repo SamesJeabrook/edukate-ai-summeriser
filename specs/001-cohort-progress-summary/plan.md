@@ -5,7 +5,7 @@
 
 ## Summary
 
-Build a self-contained Python module and CLI that accepts one employer cohort JSON packet, validates and normalises it, computes deterministic progress and intervention metrics, sends only minimum de-identified evidence to an isolated language-model service, and returns two outputs: a human-readable employer progress summary and a structured, extensible escalation payload. Channel presentation and delivery are separate concerns.
+Build a self-contained Python module and CLI that accepts one employer cohort JSON packet containing optional sessions attended and assessments submitted counts, off-the-job hours, and source at-risk flags, validates and normalises it, computes deterministic progress and intervention metrics, sends only minimum de-identified evidence to an isolated language-model service, and returns two outputs: a human-readable employer progress summary and a structured, extensible escalation payload. Missing session and assessment counts are reported as unavailable rather than treated as zero. Source flags create alerts only when they match configured rules. The real OpenAI provider is the primary runtime path; the fake provider remains the offline test path. Channel presentation and delivery are separate concerns.
 
 ## Technical Context
 
@@ -23,7 +23,9 @@ Build a self-contained Python module and CLI that accepts one employer cohort JS
 
 **Performance Goals**: Produce a result for a supported packet in under 2 minutes; deterministic validation and metrics complete before the model request.
 
-**Constraints**: No learner names or direct identifiers in model input or logs; no credentials in output; invalid packets produce no summary or escalation payload; model failure must not discard validated facts; output is channel-neutral and extensible.
+**Constraints**: No learner names or direct identifiers in model input or logs; no credentials in output; invalid packets produce no summary or escalation payload; model failure must not discard validated facts; output is channel-neutral and extensible; source at-risk flags are preserved as factual evidence and never invented by the model.
+
+**Input fields**: Learner records may include non-negative `sessions_attended` and `assessments_submitted` counts and optional structured `at_risk_flags` entries with `code` and `severity`; missing values must remain distinct from zero, be reported as evidence limitations, and be represented in output contracts.
 
 **Scale/Scope**: One employer/cohort packet per CLI invocation, within an explicitly configured learner/activity limit; no persistence, multi-user access control, scheduling, or delivery transmission.
 
@@ -84,22 +86,3 @@ tests/
 ## Complexity Tracking
 
 No constitution violations. The AI provider boundary is required by the constitution and supports model/provider replacement; it does not introduce a second application or infrastructure layer.
-src/
-├── edukate_progress_summariser/
-│ ├── **init**.py
-│ ├── **main**.py
-│ ├── cli.py
-│ ├── models.py
-│ ├── validation.py
-│ ├── metrics.py
-│ ├── alerts.py
-│ ├── summariser.py
-│ ├── prompting.py
-│ └── ai_service.py
-
-tests/
-├── unit/
-├── contract/
-├── integration/
-└── fixtures/ # References or copies of data/ fixtures
-**Structure Decision**: Use one small package under `src/` with explicit modules for the data model, validation, deterministic analysis, alert payload construction, AI boundary, and CLI orchestration. Keep tests split by behavior and preserve the existing `data/` fixtures as input examples. Do not add persistence, a web layer, or channel delivery adapters in this feature.

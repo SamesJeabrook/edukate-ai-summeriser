@@ -24,10 +24,10 @@ Expected result: all tests pass without network access.
 ## Validate a successful packet
 
 ```text
-python -m edukate_progress_summariser data/valid-input.json --format canonical
+python -m edukate_progress_summariser data/valid-input.json --provider fake --format canonical
 ```
 
-Verify that the result contains validated factual cohort metrics, a clearly labelled interpretation, evidence status, structured alerts, a channel-neutral `alert_payload`, and non-sensitive generation metadata.
+Verify that the result contains validated factual cohort metrics for `sessions_attended`, `assessments_submitted`, and off-the-job hours, supplied `at_risk_flags`, a clearly labelled interpretation, evidence status, structured alerts, a channel-neutral `alert_payload`, and non-sensitive generation metadata.
 
 ## Validate invalid packets
 
@@ -44,5 +44,15 @@ Configure the fake provider to fail or return unusable content for a valid packe
 ## Validate output extensibility
 
 Validate the canonical result against [contracts/output-schema.json](contracts/output-schema.json). Exercise formatter tests with the same `alert_payload` to produce a baseline plain-text rendering and future formatter stubs. Confirm that formatters consume canonical evidence without changing alert severity, evidence, or human-review disclaimers. Delivery transmission is not part of this validation.
+
+## Validate the real AI provider
+
+After placing `OPENAI_API_KEY` in the local `.env` file, run:
+
+```text
+python -m edukate_progress_summariser data/valid-input.json --provider openai --format text
+```
+
+Verify that the output includes an AI-generated interpretation and that no API key, learner name, direct identifier, flag description, or other sensitive input appears in the output or logs. Use the fake provider for repeatable tests and avoid sending real learner data during development.
 
 See [data-model.md](data-model.md) for entity and state rules and [contracts/cli.md](contracts/cli.md) for invocation and exit behavior.
