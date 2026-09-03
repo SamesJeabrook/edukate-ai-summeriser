@@ -111,11 +111,11 @@
 
 **Purpose**: Verify the complete contract, documentation, security posture, and clean-checkout workflow.
 
-- [ ] T038 [P] Add end-to-end tests for valid output, interpretation failure, invalid input rejection, alert payload shape, and traceability metadata in `tests/integration/test_end_to_end.py`
-- [ ] T039 [P] Add formatter compatibility tests proving one canonical payload can produce baseline plain text and future formatter adapters without changing evidence semantics in `tests/contract/test_formatter_compatibility.py`
-- [ ] T040 [P] Add package usage and configuration documentation with credential handling and offline test instructions in `README.md`
-- [ ] T041 Run the complete quickstart validation scenarios from `specs/001-cohort-progress-summary/quickstart.md` and record any implementation discrepancies in `README.md`
-- [ ] T042 Run the complete test suite under Python 3.12+ and verify the package installs from a clean checkout using `python -m unittest discover -s tests -v`
+- [x] T038 [P] Add end-to-end tests for valid output, interpretation failure, invalid input rejection, alert payload shape, and traceability metadata in `tests/integration/test_end_to_end.py`
+- [x] T039 [P] Add formatter compatibility tests proving one canonical payload can produce baseline plain text and future formatter adapters without changing evidence semantics in `tests/contract/test_formatter_compatibility.py`
+- [x] T040 [P] Add package usage and configuration documentation with credential handling and offline test instructions in `README.md`
+- [x] T041 Run the complete quickstart validation scenarios from `specs/001-cohort-progress-summary/quickstart.md` and record any implementation discrepancies in `README.md`
+- [x] T042 Run the complete test suite under Python 3.12+ and verify the package installs from a clean checkout using `python -m unittest discover -s tests -v`
 
 ---
 
