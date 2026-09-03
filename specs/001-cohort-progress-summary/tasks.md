@@ -41,9 +41,9 @@
 
 ### Tests for User Story 1
 
-- [ ] T012 [P] [US1] Add fixture-driven metric tests for learner count, hours, meetings, workshops, recency, missing evidence, and zero values in `tests/unit/test_metrics.py`
-- [ ] T013 [P] [US1] Add fake-provider summary tests for factual-versus-interpretive labelling, prompt input ordering, model metadata, and interpretation-unavailable fallback in `tests/integration/test_summary_workflow.py`
-- [ ] T014 [P] [US1] Add CLI contract tests for successful canonical and text output using `data/valid-input.json` in `tests/contract/test_cli_summary.py`
+- [x] T012 [P] [US1] Add fixture-driven metric tests for learner count, hours, meetings, workshops, recency, missing evidence, and zero values in `tests/unit/test_metrics.py`
+- [x] T013 [P] [US1] Add fake-provider summary tests for factual-versus-interpretive labelling, prompt input ordering, model metadata, and interpretation-unavailable fallback in `tests/integration/test_summary_workflow.py`
+- [x] T014 [P] [US1] Add CLI contract tests for successful canonical and text output using `data/valid-input.json` in `tests/contract/test_cli_summary.py`
 
 ### Implementation for User Story 1
 
