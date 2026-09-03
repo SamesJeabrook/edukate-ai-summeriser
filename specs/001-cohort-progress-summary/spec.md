@@ -8,6 +8,14 @@
 
 **Input**: User description: "As an account manager, I want to provide learner progress data for an employee's cohort and receive an evidence based cohort summary and structured escalation alerts, so that I can quickly communicate progress to the employer and identify learners requiring intervention. The data will be provided from a JSON packet."
 
+## Clarifications
+
+### Session 2026-09-03
+
+- Q: Should the final cohort summary and escalation payload identify learners by name, by a non-identifying learner reference, or by both? → A: Both a learner reference and learner name may appear in account-manager-facing output; only the non-identifying reference and minimum evidence are used for AI processing.
+- Q: Should intervention thresholds be fixed product-defined defaults, configurable per employer or cohort, or configurable by the account manager during each review? → A: Product-defined defaults with thresholds configurable per employer or cohort.
+- Q: Should each learner record be required to provide a stable non-identifying learner reference, or should the system generate one when the JSON packet contains only a learner name? → A: Use the learner name as the account-manager-facing reference; derive a non-identifying reference for AI processing.
+
 ## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Generate an evidence-based cohort summary (Priority: P1)
@@ -50,7 +58,7 @@ As an account manager, I want clear feedback when a JSON packet is invalid or se
 **Acceptance Scenarios**:
 
 1. **Given** a malformed JSON packet, **When** the account manager submits it, **Then** processing stops with an actionable validation message and no summary or alert is produced.
-2. **Given** a packet containing learner names or other identifying details, **When** interpretation is requested, **Then** the language model receives only the minimum de-identified evidence required for the requested analysis.
+2. **Given** a packet containing learner names or other identifying details, **When** interpretation is requested, **Then** the account-manager-facing result may use the learner name as the learner reference, while the language model receives only a derived non-identifying reference and the minimum de-identified evidence required for the requested analysis.
 3. **Given** learner-provided text contains instructions attempting to change the system's behaviour, **When** the packet is processed, **Then** the content is treated as untrusted evidence and cannot override the summary, privacy, or output-labelling rules.
 4. **Given** a syntactically valid packet contains an invalid field type or date, such as text in `otj_hours`, a text value instead of a meetings list, or a malformed or future activity date, **When** the account manager submits it, **Then** processing stops with a field-specific, non-sensitive validation message and no summary or escalation payload is produced.
 
@@ -77,10 +85,10 @@ As an account manager, I want clear feedback when a JSON packet is invalid or se
 - **FR-008**: Each escalation alert MUST include a learner reference, severity, alert category, triggering evidence, explanation, recommended human follow-up, and an indication of whether the evidence is complete.
 - **FR-009**: The system MUST avoid presenting an alert as a diagnosis, employment decision, guaranteed outcome, or substitute for account-manager or employer judgement.
 - **FR-010**: The system MUST produce a channel-neutral alert payload that can be formatted for Slack, email, and additional communication channels added later.
-- **FR-011**: Each alert payload MUST include the cohort context, alert severity, affected learner reference, alert category, triggering evidence, explanation, recommended human follow-up, evidence-completeness status, AI-generated-content label where applicable, and human-review disclaimer.
+- **FR-011**: Each alert payload MUST include the cohort context, alert severity, affected learner reference, learner name as the reference when available to the authorised account manager, alert category, triggering evidence, explanation, recommended human follow-up, evidence-completeness status, AI-generated-content label where applicable, and human-review disclaimer.
 - **FR-012**: The channel-neutral payload MUST remain independent of channel-specific delivery settings, credentials, templates, and transmission behavior; the exact formatted elements and channel presentation rules will be defined during planning.
-- **FR-013**: The system MUST allow intervention rules and their thresholds to be configured without changing the source progress packet format.
-- **FR-014**: The system MUST de-identify learner data and send only the minimum evidence necessary for interpretation to the language model; learner names and other direct identifiers MUST NOT be included in that evidence.
+- **FR-013**: The system MUST provide product-defined default intervention rules and thresholds, allow those thresholds to be configured per employer or cohort, and apply the applicable configuration without changing the source progress packet format.
+- **FR-014**: The system MUST keep learner names and other direct identifiers available only to the authorised account-manager-facing result, MUST use the learner name as the account-manager-facing reference when no separate reference is provided, and MUST send the language model only a derived non-identifying reference and the minimum evidence necessary for interpretation.
 - **FR-015**: The system MUST treat all learner-generated or packet-provided free text as untrusted input and prevent it from changing processing instructions, privacy controls, or output labels.
 - **FR-016**: The system MUST keep credentials outside user-visible output and MUST NOT write learner-identifying data or credentials to logs.
 - **FR-017**: The system MUST record non-sensitive generation metadata sufficient to identify the configured model version, generation time, input packet reference, and output status without reproducing learner content.
@@ -90,10 +98,10 @@ As an account manager, I want clear feedback when a JSON packet is invalid or se
 ### Key Entities _(include if feature involves data)_
 
 - **Progress Packet**: A JSON-provided snapshot for one employer or cohort, including its identifier and learner progress records.
-- **Learner Progress Record**: A learner reference and the available evidence about their programme, hours, meetings, workshops, recency, and supported activity fields.
+- **Learner Progress Record**: A learner name when available, an optional source reference, and the available evidence about their programme, hours, meetings, workshops, recency, and supported activity fields.
 - **Cohort Summary**: A reviewable result containing validated cohort facts, clearly labelled AI-generated interpretation, evidence limitations, and generation metadata.
 - **Escalation Alert**: A structured, human-reviewable indication that a learner record matches an intervention rule, including severity, evidence, rationale, and recommended follow-up.
-- **Alert Payload**: A channel-neutral representation of one or more escalation alerts that contains the information needed to produce Slack, email, or future channel formats without making those channels part of this feature's delivery behavior.
+- **Alert Payload**: A channel-neutral representation of one or more escalation alerts, including the authorised account-manager-facing learner reference when available, that contains the information needed to produce Slack, email, or future channel formats without making those channels part of this feature's delivery behavior.
 - **Intervention Rule**: A named condition and threshold used to identify evidence that warrants account-manager review.
 - **Generation Metadata**: Non-sensitive information about when and how a result was generated and which input evidence reference and model configuration were used.
 
@@ -115,8 +123,8 @@ As an account manager, I want clear feedback when a JSON packet is invalid or se
 - The account manager is authorised to access the employer or cohort represented by the packet; authentication and organisation-level access control are outside this feature's initial scope.
 - The JSON packet is a snapshot rather than a long-term system of record, and the feature does not import data directly from external learning, calendar, or employer systems.
 - The packet may include fields such as learner name, product, recorded hours, meetings, workshops, and days since last meeting; unsupported fields are ignored and do not become evidence automatically.
-- A learner reference can be used to connect an alert to the source packet, while direct identifiers remain local and are excluded from language-model input.
-- Intervention rules use product-defined default thresholds and may be adjusted through configuration; the initial feature does not require account managers to author rules in the user interface.
+- When no source reference is provided, the learner name is used as the account-manager-facing reference and a derived non-identifying reference connects AI output to the source packet; the learner name remains excluded from language-model input.
+- Intervention rules have product-defined defaults and may be adjusted per employer or cohort; account managers do not author or change rules during an individual review.
 - Alert payload generation and the ability to support Slack, email, and future channel formats are in scope, but the exact formatted elements, channel presentation rules, and configuring or operating channel delivery, including recipients, authentication, scheduling, retries, and transmission, are outside this specification and will be defined during planning or a later delivery feature.
 - The initial workflow is local; no hosted service, database, or background processing is required.
 - Results are intended for prompt employer communication and human follow-up, not for automated learner ranking, disciplinary action, or employment decisions.
