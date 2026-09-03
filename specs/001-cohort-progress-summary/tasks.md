@@ -47,11 +47,11 @@
 
 ### Implementation for User Story 1
 
-- [ ] T015 [US1] Implement deterministic cohort and learner progress calculations in `src/edukate_progress_summariser/metrics.py`
-- [ ] T016 [US1] Implement minimum-evidence prompt construction that excludes learner names, direct identifiers, credentials, and untrusted free-text instructions in `src/edukate_progress_summariser/prompting.py`
-- [ ] T017 [US1] Implement human-readable employer summary assembly with factual sections, AI interpretation labels, evidence-sufficiency status, and generation metadata in `src/edukate_progress_summariser/summariser.py`
-- [ ] T018 [US1] Implement summary orchestration that computes deterministic facts before invoking the provider and preserves facts when interpretation fails in `src/edukate_progress_summariser/summariser.py`
-- [ ] T019 [US1] Implement CLI argument parsing, input loading, result serialization, and successful exit behavior in `src/edukate_progress_summariser/cli.py`
+- [x] T015 [US1] Implement deterministic cohort and learner progress calculations in `src/edukate_progress_summariser/metrics.py`
+- [x] T016 [US1] Implement minimum-evidence prompt construction that excludes learner names, direct identifiers, credentials, and untrusted free-text instructions in `src/edukate_progress_summariser/prompting.py`
+- [x] T017 [US1] Implement human-readable employer summary assembly with factual sections, AI interpretation labels, evidence-sufficiency status, and generation metadata in `src/edukate_progress_summariser/summariser.py`
+- [x] T018 [US1] Implement summary orchestration that computes deterministic facts before invoking the provider and preserves facts when interpretation fails in `src/edukate_progress_summariser/summariser.py`
+- [x] T019 [US1] Implement CLI argument parsing, input loading, result serialization, and successful exit behavior in `src/edukate_progress_summariser/cli.py`
 
 **Checkpoint**: User Story 1 works independently with `data/valid-input.json`, a fake provider, and no external network call.
 

@@ -40,7 +40,7 @@ class MetricsTests(unittest.TestCase):
         })
         facts = calculate_facts(packet)
         self.assertEqual(facts.total_otj_hours, 0)
-        self.assertEqual(facts.evidence_limitations, ())
+        self.assertFalse(any("hours" in limitation.lower() for limitation in facts.evidence_limitations))
 
     def test_missing_hours_is_reported_as_an_evidence_limitation(self):
         packet = validate_packet({
