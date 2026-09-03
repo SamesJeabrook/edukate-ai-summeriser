@@ -3,8 +3,6 @@
 **Branch**: `main` | **Date**: 2026-09-03 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `/specs/001-cohort-progress-summary/spec.md`
 
-**Input**: Feature specification from `/specs/001-cohort-progress-summary/spec.md`
-
 ## Summary
 
 Build a self-contained Python module and CLI that accepts one employer cohort JSON packet, validates and normalises it, computes deterministic progress and intervention metrics, sends only minimum de-identified evidence to an isolated language-model service, and returns two outputs: a human-readable employer progress summary and a structured, extensible escalation payload. Channel presentation and delivery are separate concerns.
@@ -88,20 +86,20 @@ tests/
 No constitution violations. The AI provider boundary is required by the constitution and supports model/provider replacement; it does not introduce a second application or infrastructure layer.
 src/
 ├── edukate_progress_summariser/
-├── **init**.py
-├── **main**.py
-├── cli.py
-├── models.py
-├── validation.py
-├── metrics.py
-├── alerts.py
-├── summariser.py
-├── prompting.py
-└── ai_service.py
+│ ├── **init**.py
+│ ├── **main**.py
+│ ├── cli.py
+│ ├── models.py
+│ ├── validation.py
+│ ├── metrics.py
+│ ├── alerts.py
+│ ├── summariser.py
+│ ├── prompting.py
+│ └── ai_service.py
 
 tests/
 ├── unit/
 ├── contract/
 ├── integration/
-└── fixtures/ -> repository data fixtures
+└── fixtures/ # References or copies of data/ fixtures
 **Structure Decision**: Use one small package under `src/` with explicit modules for the data model, validation, deterministic analysis, alert payload construction, AI boundary, and CLI orchestration. Keep tests split by behavior and preserve the existing `data/` fixtures as input examples. Do not add persistence, a web layer, or channel delivery adapters in this feature.
