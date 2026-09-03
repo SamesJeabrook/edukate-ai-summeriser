@@ -5,7 +5,7 @@ import json
 from typing import Any, Mapping
 
 
-SENSITIVE_KEYS = frozenset({"name", "learner_name", "api_key", "password", "token", "secret", "credentials", "notes", "free_text"})
+SENSITIVE_KEYS = frozenset({"name", "learner_name", "learner_id", "api_key", "password", "token", "secret", "credentials", "notes", "free_text"})
 
 
 def derive_learner_reference(employer_id: Any, learner_name: str, position: int) -> str:

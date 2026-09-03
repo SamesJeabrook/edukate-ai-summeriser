@@ -20,5 +20,17 @@ def build_evidence(packet: ProgressPacket) -> Dict[str, Any]:
     return {"employer_id": packet.employer_id, "learners": learners}
 
 
+def validate_evidence_boundary(evidence: Dict[str, Any]) -> Dict[str, Any]:
+    """Allow only the fixed, de-identified fields sent to the provider."""
+    allowed = {"employer_id", "learners"}
+    if set(evidence) - allowed:
+        raise ValueError("unsupported AI evidence field")
+    for learner in evidence.get("learners", []):
+        required = {"learner_reference", "product", "otj_hours", "meeting_count", "workshop_count", "days_since_last_meeting"}
+        if set(learner) != required:
+            raise ValueError("unsupported AI learner evidence field")
+    return evidence
+
+
 def build_interpretation_prompt(packet: ProgressPacket) -> Dict[str, Any]:
-    return build_evidence(packet)
+    return validate_evidence_boundary(build_evidence(packet))

@@ -96,12 +96,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T032 [US3] Complete progress-packet and nested activity validation, including required fields, uniqueness, supported types, non-negative values, and valid non-future dates in `src/edukate_progress_summariser/validation.py`
-- [ ] T033 [US3] Implement safe error formatting that reports field paths and validation categories without echoing learner-sensitive values or credentials in `src/edukate_progress_summariser/errors.py`
-- [ ] T034 [US3] Enforce pre-provider rejection and no-partial-result behavior for invalid packets in `src/edukate_progress_summariser/summariser.py`
-- [ ] T035 [US3] Enforce prompt-injection-safe evidence boundaries and output-label invariants in `src/edukate_progress_summariser/prompting.py` and `src/edukate_progress_summariser/summariser.py`
-- [ ] T036 [US3] Add credential-safe logging and generation metadata redaction in `src/edukate_progress_summariser/logging_utils.py` and `src/edukate_progress_summariser/privacy.py`
-- [ ] T037 [US3] Wire validation and processing errors to CLI exit codes and stderr without writing partial output in `src/edukate_progress_summariser/cli.py`
+- [x] T032 [US3] Complete progress-packet and nested activity validation, including required fields, uniqueness, supported types, non-negative values, and valid non-future dates in `src/edukate_progress_summariser/validation.py`
+- [x] T033 [US3] Implement safe error formatting that reports field paths and validation categories without echoing learner-sensitive values or credentials in `src/edukate_progress_summariser/errors.py`
+- [x] T034 [US3] Enforce pre-provider rejection and no-partial-result behavior for invalid packets in `src/edukate_progress_summariser/summariser.py`
+- [x] T035 [US3] Enforce prompt-injection-safe evidence boundaries and output-label invariants in `src/edukate_progress_summariser/prompting.py` and `src/edukate_progress_summariser/summariser.py`
+- [x] T036 [US3] Add credential-safe logging and generation metadata redaction in `src/edukate_progress_summariser/logging_utils.py` and `src/edukate_progress_summariser/privacy.py`
+- [x] T037 [US3] Wire validation and processing errors to CLI exit codes and stderr without writing partial output in `src/edukate_progress_summariser/cli.py`
 
 **Checkpoint**: All invalid fixtures are rejected safely, and valid packets cannot leak learner identifiers or credentials across the AI/logging boundary.
 
