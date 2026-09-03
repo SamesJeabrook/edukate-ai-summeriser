@@ -10,10 +10,10 @@
 
 **Purpose**: Establish the Python package, local installation, and test entry point.
 
-- [X] T001 Create the `src/edukate_progress_summariser/` package, `tests/` subdirectories, and package entry points in `src/edukate_progress_summariser/__init__.py` and `src/edukate_progress_summariser/__main__.py`
-- [X] T002 [P] Create `pyproject.toml` with Python 3.12+ metadata, editable-install configuration, and the official OpenAI SDK dependency in `pyproject.toml`
-- [X] T003 [P] Configure repository exclusions for `.venv/`, bytecode, build output, and test caches in `.gitignore`
-- [X] T004 [P] Add the standard-library test discovery configuration and shared test helpers in `tests/__init__.py` and `tests/helpers.py`
+- [x] T001 Create the `src/edukate_progress_summariser/` package, `tests/` subdirectories, and package entry points in `src/edukate_progress_summariser/__init__.py` and `src/edukate_progress_summariser/__main__.py`
+- [x] T002 [P] Create `pyproject.toml` with Python 3.12+ metadata, editable-install configuration, and the official OpenAI SDK dependency in `pyproject.toml`
+- [x] T003 [P] Configure repository exclusions for `.venv/`, bytecode, build output, and test caches in `.gitignore`
+- [x] T004 [P] Add the standard-library test discovery configuration and shared test helpers in `tests/__init__.py` and `tests/helpers.py`
 
 ---
 
@@ -23,13 +23,13 @@
 
 **Checkpoint**: Foundation ready; user story work can proceed independently in parallel.
 
-- [X] T005 Define typed domain models for progress packets, learners, activity records, intervention rules, facts, alerts, payloads, metadata, and result states in `src/edukate_progress_summariser/models.py`
-- [X] T006 [P] Implement JSON loading, field-path error collection, date parsing, and distinction between missing, null, zero, and invalid values in `src/edukate_progress_summariser/validation.py`
-- [X] T007 [P] Implement environment/configuration loading for model selection, packet limits, and product/employer/cohort intervention-rule defaults without exposing credentials in `src/edukate_progress_summariser/config.py`
-- [X] T008 [P] Define the replaceable AI provider protocol and official OpenAI SDK adapter boundary in `src/edukate_progress_summariser/ai_service.py`
-- [X] T009 [P] Implement derived non-identifying learner-reference generation and sensitive-field redaction helpers in `src/edukate_progress_summariser/privacy.py`
-- [X] T010 Add foundational unit tests for domain construction, configuration precedence, date parsing, reference derivation, and redaction in `tests/unit/test_foundation.py`
-- [X] T011 Add provider-boundary tests proving fake-provider injection works without network access or credentials in `tests/unit/test_ai_service.py`
+- [x] T005 Define typed domain models for progress packets, learners, activity records, intervention rules, facts, alerts, payloads, metadata, and result states in `src/edukate_progress_summariser/models.py`
+- [x] T006 [P] Implement JSON loading, field-path error collection, date parsing, and distinction between missing, null, zero, and invalid values in `src/edukate_progress_summariser/validation.py`
+- [x] T007 [P] Implement environment/configuration loading for model selection, packet limits, and product/employer/cohort intervention-rule defaults without exposing credentials in `src/edukate_progress_summariser/config.py`
+- [x] T008 [P] Define the replaceable AI provider protocol and official OpenAI SDK adapter boundary in `src/edukate_progress_summariser/ai_service.py`
+- [x] T009 [P] Implement derived non-identifying learner-reference generation and sensitive-field redaction helpers in `src/edukate_progress_summariser/privacy.py`
+- [x] T010 Add foundational unit tests for domain construction, configuration precedence, date parsing, reference derivation, and redaction in `tests/unit/test_foundation.py`
+- [x] T011 Add provider-boundary tests proving fake-provider injection works without network access or credentials in `tests/unit/test_ai_service.py`
 
 ---
 
