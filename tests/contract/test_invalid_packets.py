@@ -40,11 +40,22 @@ class InvalidPacketContractTests(unittest.TestCase):
 
     def test_all_invalid_fixtures_are_json_files(self):
         fixtures = sorted(DATA.glob("invalid-*.json"))
-        self.assertEqual(len(fixtures), 9)
+        self.assertEqual(len(fixtures), 11)
         for fixture in fixtures:
             with self.subTest(fixture=fixture.name):
                 if fixture.name != "invalid-malformed-json.json":
                     json.loads(fixture.read_text(encoding="utf-8"))
+
+    def test_new_progress_field_fixtures_are_rejected(self):
+        expected_fields = {
+            "invalid-sessions-type.json": "sessions_attended",
+            "invalid-assessments-negative.json": "assessments_submitted",
+        }
+        for filename, field in expected_fields.items():
+            with self.subTest(filename=filename):
+                with self.assertRaises(ValidationError) as context:
+                    validate_packet(load_json_file(DATA / filename))
+                self.assertIn(field, str(context.exception))
 
 
 if __name__ == "__main__":

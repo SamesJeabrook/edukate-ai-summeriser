@@ -99,6 +99,10 @@ def validate_packet(data: Any, max_learners: Optional[int] = None, max_activity_
         meetings_value = _required(raw, "meetings", path, errors)
         workshops_value = _required(raw, "workshops", path, errors)
         recency = _required(raw, "days_since_last_meeting", path, errors)
+        sessions = raw.get("sessions_attended")
+        assessments = raw.get("assessments_submitted")
+        if "at_risk_flags" in raw:
+            errors.append(f"{path}.at_risk_flags: unsupported input field; risk evidence is generated")
         if not isinstance(name, str) or not name.strip():
             errors.append(f"{path}.name: must be a non-empty string")
         if not isinstance(product, str) or not product.strip():
@@ -107,6 +111,9 @@ def validate_packet(data: Any, max_learners: Optional[int] = None, max_activity_
             errors.append(f"{path}.otj_hours: must be a non-negative number or null")
         if recency is not None and (not isinstance(recency, int) or isinstance(recency, bool) or recency < 0):
             errors.append(f"{path}.days_since_last_meeting: must be a non-negative integer or null")
+        for field_name, value in (("sessions_attended", sessions), ("assessments_submitted", assessments)):
+            if value is not None and (not isinstance(value, int) or isinstance(value, bool) or value < 0):
+                errors.append(f"{path}.{field_name}: must be a non-negative integer or null")
         meetings = _activity(meetings_value, f"{path}.meetings", "meeting", errors)
         workshops = _activity(workshops_value, f"{path}.workshops", "workshop", errors)
         if max_activity_records is not None and len(meetings) + len(workshops) > max_activity_records:
@@ -119,8 +126,8 @@ def validate_packet(data: Any, max_learners: Optional[int] = None, max_activity_
             errors.append(f"{path}: duplicate learner reference")
         if reference:
             references.add(reference)
-        if isinstance(name, str) and isinstance(product, str) and (otj_hours is None or isinstance(otj_hours, (int, float))) and (recency is None or isinstance(recency, int)):
-            learners.append(LearnerProgress(name.strip(), product.strip(), float(otj_hours) if otj_hours is not None else None, meetings, workshops, recency, learner_id=learner_id.strip() if isinstance(learner_id, str) and learner_id.strip() else None))
+        if isinstance(name, str) and isinstance(product, str) and (otj_hours is None or isinstance(otj_hours, (int, float))) and (recency is None or isinstance(recency, int)) and (sessions is None or isinstance(sessions, int)) and (assessments is None or isinstance(assessments, int)):
+            learners.append(LearnerProgress(name.strip(), product.strip(), float(otj_hours) if otj_hours is not None else None, meetings, workshops, recency, learner_id=learner_id.strip() if isinstance(learner_id, str) and learner_id.strip() else None, sessions_attended=sessions, assessments_submitted=assessments))
     if errors:
         raise ValidationError(errors)
     return ProgressPacket(employer_id=employer_id, learners=tuple(learners))

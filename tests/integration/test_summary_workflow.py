@@ -38,7 +38,9 @@ class SummaryWorkflowTests(unittest.TestCase):
         evidence_text = str(provider.last_evidence)
         self.assertNotIn(self.packet.learners[0].name, evidence_text)
         self.assertEqual(result.facts.learner_count, len(self.packet.learners))
-        self.assertIn("learners", provider.last_evidence)
+        self.assertIn("cohort", provider.last_evidence)
+        self.assertNotIn("learners", provider.last_evidence)
+        self.assertNotIn("name", repr(provider.last_evidence))
 
     def test_provider_failure_preserves_facts_and_marks_interpretation_unavailable(self):
         provider = FailingProvider(model="test-model")
@@ -47,6 +49,27 @@ class SummaryWorkflowTests(unittest.TestCase):
         self.assertIsNone(result.interpretation)
         self.assertEqual(result.facts.learner_count, 100)
         self.assertIn("unavailable", result.evidence_status.lower())
+
+    def test_generated_risk_context_is_aggregate_and_excludes_learner_details(self):
+        packet = validate_packet({
+            "employer_id": 123,
+            "learners": [{
+                "name": "Flagged Learner",
+                "product": "Example",
+                "sessions_attended": 4,
+                "assessments_submitted": 2,
+                "otj_hours": 10,
+                "meetings": [],
+                "workshops": [],
+                "days_since_last_meeting": 31,
+            }],
+        })
+        provider = FakeAIProvider()
+        result = SummaryService(provider).generate(packet)
+        self.assertEqual(result.facts.sessions_attended, 4)
+        self.assertEqual(result.facts.assessments_submitted, 2)
+        self.assertGreater(provider.last_evidence["cohort"]["risk_alert_count"], 0)
+        self.assertNotIn("Flagged Learner", repr(provider.last_evidence))
 
 
 if __name__ == "__main__":

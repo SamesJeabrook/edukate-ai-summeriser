@@ -14,43 +14,67 @@
       "properties": {
         "facts": {
           "type": "object",
-          "required": ["learner_count", "sessions_attended", "assessments_submitted", "total_otj_hours", "at_risk_flags"],
+          "required": [
+            "learner_count",
+            "sessions_attended",
+            "assessments_submitted",
+            "total_otj_hours",
+            "risk_alert_count",
+            "risk_alerts_by_category",
+            "risk_alerts_by_severity"
+          ],
           "properties": {
-            "learner_count": {"type": "integer", "minimum": 1},
-            "sessions_attended": {"type": ["integer", "null"], "minimum": 0},
-            "assessments_submitted": {"type": ["integer", "null"], "minimum": 0},
-            "total_otj_hours": {"type": "number", "minimum": 0},
-            "at_risk_flags": {"type": "array", "items": {"$ref": "#/$defs/at_risk_flag"}}
+            "learner_count": { "type": "integer", "minimum": 1 },
+            "sessions_attended": { "type": ["integer", "null"], "minimum": 0 },
+            "assessments_submitted": {
+              "type": ["integer", "null"],
+              "minimum": 0
+            },
+            "total_otj_hours": { "type": "number", "minimum": 0 },
+            "risk_alert_count": { "type": "integer", "minimum": 0 },
+            "risk_alerts_by_category": {
+              "type": "object",
+              "additionalProperties": { "type": "integer", "minimum": 0 }
+            },
+            "risk_alerts_by_severity": {
+              "type": "object",
+              "additionalProperties": { "type": "integer", "minimum": 0 }
+            }
           },
           "additionalProperties": true
         },
-        "interpretation": {"type": ["string", "null"]},
-        "evidence_status": {"type": "string"}
+        "interpretation": { "type": ["string", "null"] },
+        "evidence_status": { "type": "string" }
       },
       "additionalProperties": true
     },
     "alerts": {
       "type": "array",
-      "items": {"$ref": "#/$defs/alert"}
+      "items": { "$ref": "#/$defs/alert" }
     },
     "alert_payload": {
       "type": "object",
       "required": ["cohort_context", "alerts", "human_review_disclaimer"],
       "properties": {
-        "cohort_context": {"type": "object"},
-        "alerts": {"type": "array", "items": {"$ref": "#/$defs/alert"}},
-        "human_review_disclaimer": {"type": "string"}
+        "cohort_context": { "type": "object" },
+        "alerts": { "type": "array", "items": { "$ref": "#/$defs/alert" } },
+        "human_review_disclaimer": { "type": "string" }
       },
       "additionalProperties": true
     },
     "metadata": {
       "type": "object",
-      "required": ["generated_at", "model", "input_packet_reference", "output_status"],
+      "required": [
+        "generated_at",
+        "model",
+        "input_packet_reference",
+        "output_status"
+      ],
       "properties": {
-        "generated_at": {"type": "string"},
-        "model": {"type": "string"},
-        "input_packet_reference": {"type": "string"},
-        "output_status": {"type": "string"}
+        "generated_at": { "type": "string" },
+        "model": { "type": "string" },
+        "input_packet_reference": { "type": "string" },
+        "output_status": { "type": "string" }
       },
       "additionalProperties": false
     }
@@ -58,27 +82,26 @@
   "$defs": {
     "alert": {
       "type": "object",
-      "required": ["learner_reference", "severity", "category", "triggering_evidence", "explanation", "recommended_follow_up", "evidence_complete"],
+      "required": [
+        "learner_reference",
+        "severity",
+        "category",
+        "triggering_evidence",
+        "explanation",
+        "recommended_follow_up",
+        "evidence_complete"
+      ],
       "properties": {
-        "learner_reference": {"type": "string"},
-        "learner_name": {"type": "string"},
-        "severity": {"type": "string"},
-        "category": {"type": "string"},
-        "triggering_evidence": {"type": "array"},
-        "explanation": {"type": "string"},
-        "recommended_follow_up": {"type": "string"},
-        "evidence_complete": {"type": "boolean"}
+        "learner_reference": { "type": "string" },
+        "learner_name": { "type": "string" },
+        "severity": { "type": "string" },
+        "category": { "type": "string" },
+        "triggering_evidence": { "type": "array" },
+        "explanation": { "type": "string" },
+        "recommended_follow_up": { "type": "string" },
+        "evidence_complete": { "type": "boolean" }
       },
       "additionalProperties": true
-    },
-    "at_risk_flag": {
-      "type": "object",
-      "required": ["code", "severity"],
-      "properties": {
-        "code": {"type": "string", "minLength": 1},
-        "severity": {"type": "string", "minLength": 1}
-      },
-      "additionalProperties": false
     }
   }
 }

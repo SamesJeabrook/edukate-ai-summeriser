@@ -25,6 +25,8 @@ class LearnerProgress:
     days_since_last_meeting: Optional[int]
     learner_id: Optional[str] = None
     extra: Dict[str, Any] = field(default_factory=dict)
+    sessions_attended: Optional[int] = None
+    assessments_submitted: Optional[int] = None
 
 
 @dataclass(frozen=True)
@@ -54,6 +56,11 @@ class CohortFacts:
     learners_without_activity: int
     recency_values: Tuple[Optional[int], ...]
     evidence_limitations: Tuple[str, ...] = ()
+    sessions_attended: Optional[int] = None
+    assessments_submitted: Optional[int] = None
+    risk_alert_count: int = 0
+    risk_alerts_by_category: Dict[str, int] = field(default_factory=dict)
+    risk_alerts_by_severity: Dict[str, int] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)

@@ -53,11 +53,10 @@ class AlertWorkflowTests(unittest.TestCase):
         provider = FakeAIProvider()
         result = SummaryService(provider, rules=default_rules()).generate(self.make_packet())
         output_alert = result.alert_payload.alerts[0]
-        ai_learner = provider.last_evidence["learners"][0]
         self.assertEqual(output_alert.learner_name, "Laura Davis")
         self.assertEqual(output_alert.learner_reference, "Laura Davis")
-        self.assertEqual(len(ai_learner["learner_reference"]), len("learner-0000000000000000"))
-        self.assertNotEqual(ai_learner["learner_reference"], output_alert.learner_reference)
+        self.assertIn("cohort", provider.last_evidence)
+        self.assertNotIn("Laura Davis", repr(provider.last_evidence))
 
 
 if __name__ == "__main__":

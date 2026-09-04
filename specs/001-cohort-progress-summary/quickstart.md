@@ -27,7 +27,7 @@ Expected result: all tests pass without network access.
 python -m edukate_progress_summariser data/valid-input.json --provider fake --format canonical
 ```
 
-Verify that the result contains validated factual cohort metrics for `sessions_attended`, `assessments_submitted`, and off-the-job hours, supplied `at_risk_flags`, a clearly labelled interpretation, evidence status, structured alerts, a channel-neutral `alert_payload`, and non-sensitive generation metadata.
+Verify that the result contains validated factual cohort metrics for the available session count derived from meetings/workshops or explicit `sessions_attended`, `assessments_submitted` when supplied, off-the-job hours, generated risk alert counts by category and severity, a clearly labelled consolidated interpretation, evidence status, structured alerts, a channel-neutral `alert_payload`, and non-sensitive generation metadata.
 
 ## Validate invalid packets
 

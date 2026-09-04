@@ -40,6 +40,15 @@ class CLISummaryContractTests(unittest.TestCase):
         self.assertIn("Evidence status", completed.stdout)
         self.assertNotIn("Laura Davis", completed.stderr)
 
+    def test_corrected_packet_exposes_sessions_assessments_and_flags(self):
+        completed = self.run_cli("data/valid-input.json", "--provider", "fake", "--format", "canonical")
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        output = json.loads(completed.stdout)
+        facts = output["summary"]["facts"]
+        self.assertGreater(facts["sessions_attended"], 0)
+        self.assertIsNone(facts["assessments_submitted"])
+        self.assertNotIn("at_risk_flags", facts)
+
 
 if __name__ == "__main__":
     unittest.main()

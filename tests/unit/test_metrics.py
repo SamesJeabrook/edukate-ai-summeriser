@@ -58,6 +58,24 @@ class MetricsTests(unittest.TestCase):
         self.assertEqual(facts.total_otj_hours, 0)
         self.assertTrue(any("hours" in limitation.lower() for limitation in facts.evidence_limitations))
 
+    def test_corrected_progress_fields_are_aggregated(self):
+        packet = validate_packet({
+            "employer_id": 123,
+            "learners": [{
+                "name": "Flagged Learner",
+                "product": "Example",
+                "sessions_attended": 4,
+                "assessments_submitted": 2,
+                "otj_hours": 10,
+                "meetings": [],
+                "workshops": [],
+                "days_since_last_meeting": 1,
+            }],
+        })
+        facts = calculate_facts(packet)
+        self.assertEqual(facts.sessions_attended, 4)
+        self.assertEqual(facts.assessments_submitted, 2)
+
 
 if __name__ == "__main__":
     unittest.main()
