@@ -16,7 +16,6 @@
 - Q: Should intervention thresholds be fixed product-defined defaults, configurable per employer or cohort, or configurable by the account manager during each review? → A: Product-defined defaults with thresholds configurable per employer or cohort.
 - Q: Should each learner record be required to provide a stable non-identifying learner reference, or should the system generate one when the JSON packet contains only a learner name? → A: Use the learner name as the account-manager-facing reference; derive a non-identifying reference for AI processing.
 - Q: Should `sessions_attended` and `assessments_submitted` be required for every learner record, or should they be optional when the source system does not provide them? → A: Allow missing values; distinguish missing from zero and report the evidence limitation.
-- Q: Should every source-provided at-risk flag automatically create an escalation alert, or should only flags matching configured rules create alerts? → A: Treat source flags as evidence and create alerts only when they match configured intervention rules.
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -26,11 +25,11 @@ As an account manager, I want to provide a valid JSON progress packet and receiv
 
 **Why this priority**: The cohort summary is the primary employer communication outcome and is useful even when no individual escalation is required.
 
-**Independent Test**: Provide the sample engineering-manager JSON packet and verify that the result describes sessions attended, assessments submitted, off-the-job hours, and supplied at-risk flags, distinguishes reported facts from interpretation, identifies evidence limitations, and can be reviewed without inspecting the source packet.
+**Independent Test**: Provide the sample engineering-manager JSON packet and verify that the result describes sessions attended, assessments submitted, off-the-job hours, and generated aggregate risk evidence, distinguishes reported facts from interpretation, identifies evidence limitations, and can be reviewed without inspecting the source packet.
 
 **Acceptance Scenarios**:
 
-1. **Given** a valid JSON packet containing an employer or cohort identifier and learner progress records, **When** the account manager requests a summary, **Then** the system presents cohort-level factual metrics for sessions attended, assessments submitted, off-the-job hours, and supplied at-risk flags, together with an evidence-based interpretation of overall progress.
+1. **Given** a valid JSON packet containing an employer or cohort identifier and learner progress records, **When** the account manager requests a summary, **Then** the system presents cohort-level factual metrics for sessions attended, assessments submitted, off-the-job hours, and generated aggregate risk evidence, together with an evidence-based interpretation of overall progress.
 2. **Given** a packet with incomplete learner activity fields, **When** the account manager requests a summary, **Then** the system identifies missing or incomplete evidence and avoids presenting unsupported conclusions as facts.
 3. **Given** a generated summary, **When** the account manager reviews it, **Then** AI-generated interpretation is clearly labelled separately from factual data supplied in the packet.
 
@@ -82,7 +81,7 @@ As an account manager, I want clear feedback when a JSON packet is invalid or se
 - **FR-003**: The system MUST distinguish missing, null, zero, and invalid values when calculating or presenting progress evidence.
 - **FR-004**: The system MUST calculate and present cohort-level factual measures from the packet, including learner count, recorded progress hours, contact activity, workshop activity, and available recency information.
 - **FR-004a**: The system MUST calculate and present cohort-level factual measures for sessions attended, assessments submitted, and off-the-job hours, preserving per-learner values where relevant.
-- **FR-004b**: The system MUST present supplied at-risk flags as factual source data separately from any AI-generated interpretation and MUST preserve each flag's code and severity.
+- **FR-004b**: The system MUST present generated risk alert counts by category and severity as deterministic evidence separately from any AI-generated interpretation.
 - **FR-005**: The system MUST present factual packet data separately from any generated interpretation and label all generated interpretation as AI-generated.
 - **FR-006**: The system MUST state when evidence is incomplete, conflicting, stale, or insufficient to support a conclusion.
 - **FR-007**: The system MUST apply the defined intervention rules to each assessable learner and create structured alerts only for matching conditions; source-provided at-risk flags that do not match a configured rule remain factual summary evidence without creating an alert.
@@ -103,7 +102,7 @@ As an account manager, I want clear feedback when a JSON packet is invalid or se
 
 - **Progress Packet**: A JSON-provided snapshot for one employer or cohort, including its identifier and learner progress records.
 - **Learner Progress Record**: A learner name when available, an optional source reference, and the available evidence about their programme, sessions, assessments, hours, meetings, workshops, recency, at-risk flags, and supported activity fields.
-- **At-Risk Flag**: A source-provided indication requiring review, containing a machine-readable code and severity; it is evidence to assess, not an automatic outcome or diagnosis.
+- **Generated Risk Evidence**: Deterministic aggregate counts of escalation alerts by category and severity, derived from the learner progress packet and intervention rules; it is evidence for interpretation, not an automatic outcome or diagnosis.
 - **Cohort Summary**: A reviewable result containing validated cohort facts, clearly labelled AI-generated interpretation, evidence limitations, and generation metadata.
 - **Escalation Alert**: A structured, human-reviewable indication that a learner record matches an intervention rule, including severity, evidence, rationale, and recommended follow-up.
 - **Alert Payload**: A channel-neutral representation of one or more escalation alerts, including the authorised account-manager-facing learner reference when available, that contains the information needed to produce Slack, email, or future channel formats without making those channels part of this feature's delivery behavior.
@@ -128,9 +127,8 @@ As an account manager, I want clear feedback when a JSON packet is invalid or se
 
 - The account manager is authorised to access the employer or cohort represented by the packet; authentication and organisation-level access control are outside this feature's initial scope.
 - The JSON packet is a snapshot rather than a long-term system of record, and the feature does not import data directly from external learning, calendar, or employer systems.
-- The original packet format is authoritative and may contain learner name, product, recorded hours, meetings, workshops, and days since last meeting. When explicit `sessions_attended` is absent, the count of meeting and workshop records is used as the available session-attendance evidence; when `assessments_submitted` and `at_risk_flags` are absent, those measures are reported as unavailable or empty rather than invented.
-- Each learner record may include non-negative `sessions_attended` and `assessments_submitted` counts, plus an optional `at_risk_flags` list of objects with required `code` and `severity` strings; missing values are distinct from zero and are reported as evidence limitations.
-- At-risk flags are source-provided evidence and may trigger deterministic escalation rules; the AI may interpret them only after de-identification and must not invent new flags.
+- The original packet format is authoritative and may contain learner name, product, recorded hours, meetings, workshops, and days since last meeting. When explicit `sessions_attended` is absent, the count of meeting and workshop records is used as the available session-attendance evidence; when `assessments_submitted` is absent, it is reported as unavailable rather than invented.
+- Risk evidence is generated deterministically from the original progress fields and configured intervention rules; it is not supplied as an input `at_risk_flags` field.
 - When no source reference is provided, the learner name is used as the account-manager-facing reference and a derived non-identifying reference connects AI output to the source packet; the learner name remains excluded from language-model input.
 - Intervention rules have product-defined defaults and may be adjusted per employer or cohort; account managers do not author or change rules during an individual review.
 - Alert payload generation and the ability to support Slack, email, and future channel formats are in scope, but the exact formatted elements, channel presentation rules, and configuring or operating channel delivery, including recipients, authentication, scheduling, retries, and transmission, are outside this specification and will be defined during planning or a later delivery feature.

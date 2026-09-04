@@ -15,7 +15,7 @@ The CLI reads one JSON packet. It writes the canonical structured result to stan
 
 ## Input
 
-The input must satisfy the Progress Packet model in [data-model.md](../data-model.md), including `sessions_attended`, `assessments_submitted`, and optional structured `at_risk_flags`. Learner names, direct identifiers, flag descriptions, and other free text remain local and are excluded from the AI evidence request.
+The input must satisfy the original Progress Packet model in [data-model.md](../data-model.md). Learner names, direct identifiers, and other free text remain local and are excluded from the AI evidence request. Risk information is generated deterministically from the progress evidence rather than supplied as an input flag.
 
 ## Output behavior
 

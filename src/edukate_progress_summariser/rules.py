@@ -19,7 +19,6 @@ def default_rules() -> Tuple[InterventionRule, ...]:
         ),
         InterventionRule("low-sessions", "product-v1", "session_attendance", "medium", "sessions_attended", 1, "<", "Review attendance and arrange learner support."),
         InterventionRule("low-assessments", "product-v1", "assessment_submissions", "medium", "assessments_submitted", 1, "<", "Review assessment progress and arrange learner support."),
-        InterventionRule("source-at-risk", "product-v1", "source_at_risk", "high", "at_risk_flags", 1, ">=", "Review the source risk flag with the learner and employer contact."),
     )
 
 

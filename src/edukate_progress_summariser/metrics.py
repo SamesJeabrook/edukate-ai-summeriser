@@ -28,5 +28,4 @@ def calculate_facts(packet: ProgressPacket) -> CohortFacts:
         evidence_limitations=tuple(limitations),
         sessions_attended=sum(learner.sessions_attended if learner.sessions_attended is not None else len(learner.meetings) + len(learner.workshops) for learner in packet.learners),
         assessments_submitted=sum(learner.assessments_submitted or 0 for learner in packet.learners) if not missing_assessments else None,
-        at_risk_flags=tuple(flag for learner in packet.learners for flag in learner.at_risk_flags),
     )

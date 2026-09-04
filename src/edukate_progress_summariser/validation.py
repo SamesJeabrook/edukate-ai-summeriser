@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, List, Optional, Sequence, Tuple
 
-from .models import ActivityRecord, AtRiskFlag, LearnerProgress, ProgressPacket
+from .models import ActivityRecord, LearnerProgress, ProgressPacket
 
 
 class ValidationError(ValueError):
@@ -101,7 +101,8 @@ def validate_packet(data: Any, max_learners: Optional[int] = None, max_activity_
         recency = _required(raw, "days_since_last_meeting", path, errors)
         sessions = raw.get("sessions_attended")
         assessments = raw.get("assessments_submitted")
-        flags_value = raw.get("at_risk_flags")
+        if "at_risk_flags" in raw:
+            errors.append(f"{path}.at_risk_flags: unsupported input field; risk evidence is generated")
         if not isinstance(name, str) or not name.strip():
             errors.append(f"{path}.name: must be a non-empty string")
         if not isinstance(product, str) or not product.strip():
@@ -113,28 +114,6 @@ def validate_packet(data: Any, max_learners: Optional[int] = None, max_activity_
         for field_name, value in (("sessions_attended", sessions), ("assessments_submitted", assessments)):
             if value is not None and (not isinstance(value, int) or isinstance(value, bool) or value < 0):
                 errors.append(f"{path}.{field_name}: must be a non-negative integer or null")
-        flags = []
-        if flags_value is not None:
-            if not isinstance(flags_value, list):
-                errors.append(f"{path}.at_risk_flags: must be a list or null")
-            else:
-                seen_flags = set()
-                for flag_index, flag in enumerate(flags_value):
-                    flag_path = f"{path}.at_risk_flags[{flag_index}]"
-                    if not isinstance(flag, dict):
-                        errors.append(f"{flag_path}: must be an object")
-                        continue
-                    code = flag.get("code")
-                    severity = flag.get("severity")
-                    if not isinstance(code, str) or not code.strip():
-                        errors.append(f"{flag_path}.code: must be a non-empty string")
-                    if not isinstance(severity, str) or not severity.strip():
-                        errors.append(f"{flag_path}.severity: must be a non-empty string")
-                    if isinstance(code, str) and code.strip() in seen_flags:
-                        errors.append(f"{flag_path}.code: duplicate flag code")
-                    if isinstance(code, str) and code.strip():
-                        seen_flags.add(code.strip())
-                        flags.append(AtRiskFlag(code.strip(), severity.strip() if isinstance(severity, str) else "", flag.get("description") if isinstance(flag.get("description"), str) else None))
         meetings = _activity(meetings_value, f"{path}.meetings", "meeting", errors)
         workshops = _activity(workshops_value, f"{path}.workshops", "workshop", errors)
         if max_activity_records is not None and len(meetings) + len(workshops) > max_activity_records:
@@ -148,7 +127,7 @@ def validate_packet(data: Any, max_learners: Optional[int] = None, max_activity_
         if reference:
             references.add(reference)
         if isinstance(name, str) and isinstance(product, str) and (otj_hours is None or isinstance(otj_hours, (int, float))) and (recency is None or isinstance(recency, int)) and (sessions is None or isinstance(sessions, int)) and (assessments is None or isinstance(assessments, int)):
-            learners.append(LearnerProgress(name.strip(), product.strip(), float(otj_hours) if otj_hours is not None else None, meetings, workshops, recency, learner_id=learner_id.strip() if isinstance(learner_id, str) and learner_id.strip() else None, sessions_attended=sessions, assessments_submitted=assessments, at_risk_flags=tuple(flags)))
+            learners.append(LearnerProgress(name.strip(), product.strip(), float(otj_hours) if otj_hours is not None else None, meetings, workshops, recency, learner_id=learner_id.strip() if isinstance(learner_id, str) and learner_id.strip() else None, sessions_attended=sessions, assessments_submitted=assessments))
     if errors:
         raise ValidationError(errors)
     return ProgressPacket(employer_id=employer_id, learners=tuple(learners))

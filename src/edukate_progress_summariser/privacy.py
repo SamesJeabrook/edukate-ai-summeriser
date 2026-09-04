@@ -25,18 +25,22 @@ def redact_sensitive(value: Any) -> Any:
 
 
 def build_ai_evidence(packet: Mapping[str, Any]) -> Mapping[str, Any]:
-    learners = []
-    employer_id = packet.get("employer_id")
-    for position, learner in enumerate(packet.get("learners", [])):
-        if not isinstance(learner, Mapping):
-            continue
-        reference = derive_learner_reference(employer_id, str(learner.get("name", "")), position)
-        learners.append({
-            "learner_reference": reference,
-            "product": learner.get("product"),
-            "otj_hours": learner.get("otj_hours"),
-            "meeting_count": len(learner.get("meetings", [])) if isinstance(learner.get("meetings"), list) else None,
-            "workshop_count": len(learner.get("workshops", [])) if isinstance(learner.get("workshops"), list) else None,
-            "days_since_last_meeting": learner.get("days_since_last_meeting"),
-        })
-    return {"employer_id": employer_id, "learners": learners}
+    learners = packet.get("learners", [])
+    return {
+        "cohort": {
+            "learner_count": len(learners),
+            "sessions_attended": sum(
+                learner.get("sessions_attended") if learner.get("sessions_attended") is not None else len(learner.get("meetings", [])) + len(learner.get("workshops", []))
+                for learner in learners if isinstance(learner, Mapping)
+            ),
+            "assessments_submitted": None if any(learner.get("assessments_submitted") is None for learner in learners if isinstance(learner, Mapping)) else sum(learner.get("assessments_submitted", 0) for learner in learners if isinstance(learner, Mapping)),
+            "total_otj_hours": sum(learner.get("otj_hours") or 0 for learner in learners if isinstance(learner, Mapping)),
+            "meeting_count": sum(len(learner.get("meetings", [])) for learner in learners if isinstance(learner, Mapping)),
+            "workshop_count": sum(len(learner.get("workshops", [])) for learner in learners if isinstance(learner, Mapping)),
+            "learners_without_activity": sum(not learner.get("meetings") and not learner.get("workshops") for learner in learners if isinstance(learner, Mapping)),
+            "risk_alert_count": 0,
+            "risk_alerts_by_category": {},
+            "risk_alerts_by_severity": {},
+            "evidence_limitations": [],
+        }
+    }

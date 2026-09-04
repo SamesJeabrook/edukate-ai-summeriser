@@ -69,7 +69,8 @@ class FoundationTests(unittest.TestCase):
         self.assertNotIn("Test Learner", evidence_text)
         self.assertNotIn("secret", evidence_text)
         self.assertNotIn("private", evidence_text)
-        self.assertIn("learner_reference", evidence_text)
+        self.assertIn("cohort", evidence_text)
+        self.assertNotIn("learner_reference", evidence_text)
 
     def test_valid_packet_is_normalised(self):
         packet = validate_packet({

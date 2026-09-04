@@ -27,7 +27,8 @@ class PrivacyBoundaryTests(unittest.TestCase):
         evidence_text = repr(evidence)
         for sensitive_value in ("Private Learner", "direct-id-123", "TEST_SECRET_VALUE", "Sensitive learner note"):
             self.assertNotIn(sensitive_value, evidence_text)
-        self.assertIn("learner_reference", evidence["learners"][0])
+        self.assertIn("cohort", evidence)
+        self.assertNotIn("learners", evidence)
 
     def test_redaction_removes_sensitive_values_recursively(self):
         value = {
@@ -53,10 +54,12 @@ class PrivacyBoundaryTests(unittest.TestCase):
                 "days_since_last_meeting": 4,
             }],
         })
-        self.assertEqual(
-            set(evidence["learners"][0]),
-            {"learner_reference", "product", "otj_hours", "meeting_count", "workshop_count", "days_since_last_meeting"},
-        )
+        self.assertEqual(set(evidence["cohort"]), {
+            "learner_count", "sessions_attended", "assessments_submitted", "total_otj_hours",
+            "meeting_count", "workshop_count", "learners_without_activity", "risk_alert_count",
+            "risk_alerts_by_category", "risk_alerts_by_severity",
+            "evidence_limitations",
+        })
 
 
 if __name__ == "__main__":

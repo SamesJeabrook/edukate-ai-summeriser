@@ -27,7 +27,7 @@ class OpenAIProvider:
             input=[
                 {
                     "role": "system",
-                    "content": "Interpret only the supplied de-identified learner progress evidence. Do not invent facts.",
+                    "content": "Produce a concise consolidated cohort-level summary for an account manager. Use only the supplied aggregate evidence, do not identify or describe individual learners, do not invent facts, and state when evidence is unavailable.",
                 },
                 {"role": "user", "content": str(dict(evidence))},
             ],

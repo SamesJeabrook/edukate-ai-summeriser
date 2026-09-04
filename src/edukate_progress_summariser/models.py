@@ -27,7 +27,6 @@ class LearnerProgress:
     extra: Dict[str, Any] = field(default_factory=dict)
     sessions_attended: Optional[int] = None
     assessments_submitted: Optional[int] = None
-    at_risk_flags: Tuple["AtRiskFlag", ...] = ()
 
 
 @dataclass(frozen=True)
@@ -59,14 +58,9 @@ class CohortFacts:
     evidence_limitations: Tuple[str, ...] = ()
     sessions_attended: Optional[int] = None
     assessments_submitted: Optional[int] = None
-    at_risk_flags: Tuple["AtRiskFlag", ...] = ()
-
-
-@dataclass(frozen=True)
-class AtRiskFlag:
-    code: str
-    severity: str
-    description: Optional[str] = None
+    risk_alert_count: int = 0
+    risk_alerts_by_category: Dict[str, int] = field(default_factory=dict)
+    risk_alerts_by_severity: Dict[str, int] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)

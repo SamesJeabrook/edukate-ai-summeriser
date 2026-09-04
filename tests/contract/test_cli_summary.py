@@ -47,7 +47,7 @@ class CLISummaryContractTests(unittest.TestCase):
         facts = output["summary"]["facts"]
         self.assertGreater(facts["sessions_attended"], 0)
         self.assertIsNone(facts["assessments_submitted"])
-        self.assertEqual(facts["at_risk_flags"], [])
+        self.assertNotIn("at_risk_flags", facts)
 
 
 if __name__ == "__main__":

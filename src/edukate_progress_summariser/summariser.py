@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import replace
 from datetime import datetime, timezone
 from typing import Iterable, Optional
 
@@ -27,7 +28,13 @@ class SummaryService:
     def generate(self, packet: ProgressPacket) -> SummaryResult:
         facts = calculate_facts(packet)
         alerts = evaluate_alerts(packet, self.rules)
-        evidence = build_interpretation_prompt(packet)
+        facts = replace(
+            facts,
+            risk_alert_count=len(alerts),
+            risk_alerts_by_category=_count_alerts(alerts, "category"),
+            risk_alerts_by_severity=_count_alerts(alerts, "severity"),
+        )
+        evidence = build_interpretation_prompt(packet, alerts)
         packet_reference = hashlib.sha256(json.dumps(evidence, sort_keys=True).encode("utf-8")).hexdigest()[:16]
         generated_at = datetime.now(timezone.utc).isoformat()
         metadata_base = {
@@ -64,6 +71,14 @@ class SummaryService:
             interpretation=interpretation,
         )
         return SummaryResult(status, facts, interpretation, evidence_status, alerts, payload, metadata)
+
+
+def _count_alerts(alerts, attribute):
+    counts = {}
+    for alert in alerts:
+        key = getattr(alert, attribute)
+        counts[key] = counts.get(key, 0) + 1
+    return counts
 
 
 def render_text(result: SummaryResult) -> str:

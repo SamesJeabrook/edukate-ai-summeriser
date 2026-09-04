@@ -24,11 +24,6 @@ def evaluate_alerts(packet: ProgressPacket, rules: Iterable[InterventionRule]) -
     for learner in packet.learners:
         for rule in rules:
             value = getattr(learner, rule.metric, None)
-            if rule.metric == "at_risk_flags":
-                for flag in learner.at_risk_flags:
-                    if flag.code == rule.rule_id or rule.rule_id == "source-at-risk":
-                        alerts.append(EscalationAlert(learner.name, rule.severity, rule.category, (f"flag_code={flag.code}", f"flag_severity={flag.severity}"), "Source at-risk flag matches an intervention rule.", rule.recommended_follow_up, True, learner.name))
-                continue
             if value is None:
                 continue
             if _matches(value, rule):
